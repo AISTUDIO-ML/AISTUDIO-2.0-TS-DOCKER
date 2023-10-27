@@ -36,6 +36,7 @@ export class UsersModule implements NestModule{
        .exclude(
         {path: 'users/login',  method: RequestMethod.ALL},
         {path: 'users/singup', method: RequestMethod.ALL},
+        {path: 'users/verify-email/:token', method: RequestMethod.ALL},
        )
        .forRoutes(UsersController)
   }

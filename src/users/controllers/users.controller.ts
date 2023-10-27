@@ -24,9 +24,9 @@ export class UsersController {
     }
 
     @Post('verify-email/:token')
-    async verifyEmail(@Auth() auth: User, @Param('token') token: string){
+    async verifyEmail(@Param('token') token: string){
 
-      return await this.authService.verifyEmailToken(auth, token)
+      return await this.authService.verifyEmailToken(token)
 
     }
 }

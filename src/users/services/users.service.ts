@@ -61,9 +61,9 @@ export class UserService{
     }
 
 
-    async findByVerifyToken(user: User, token: string): Promise<User>{
+    async findByVerifyToken(token: string): Promise<User>{
 
-        const  foundUser = await this.usersRepository.findOne({where: { verifyToken: token, id: user.id} })
+        const  foundUser = await this.usersRepository.findOne({where: { verifyToken: token} })
         return foundUser;
     }
 

@@ -60,8 +60,8 @@ export class AuthService {
          }
     }
 
-    async verifyEmailToken(user: User, verifyToken: string): Promise<User>{
-         const existedUser = await this.userService.findByVerifyToken(user, verifyToken )
+    async verifyEmailToken( verifyToken: string): Promise<User>{
+         const existedUser = await this.userService.findByVerifyToken( verifyToken )
          if(!existedUser){
             throw new BadRequestException('Invalid Token')
          }
