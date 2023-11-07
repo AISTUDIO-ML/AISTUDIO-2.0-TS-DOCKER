@@ -7,6 +7,8 @@ import { User } from './entities/user.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
+import { GoogleAuthStrategy } from './strategies/google.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Global()
 @Module({
@@ -23,10 +25,11 @@ import { AuthMiddleware } from 'src/middlewares/auth.middleware';
           }
        },
        inject:[ConfigService]
-     })
+     }),
+     PassportModule
   ],
   controllers: [UsersController],
-  providers:   [UserService, AuthService],
+  providers:   [UserService, AuthService,GoogleAuthStrategy],
   exports:     [UserService]
 })
 export class UsersModule implements NestModule{
@@ -37,6 +40,8 @@ export class UsersModule implements NestModule{
         {path: 'users/login',  method: RequestMethod.ALL},
         {path: 'users/singup', method: RequestMethod.ALL},
         {path: 'users/verify-email/:token', method: RequestMethod.ALL},
+        {path: 'users/google-login', method: RequestMethod.ALL},
+        {path: 'users/google-auth-callback', method: RequestMethod.ALL}
        )
        .forRoutes(UsersController)
   }
