@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { GoogleAuthStrategy } from './strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { MicrosoftAuthStrategy } from './strategies/microsoft.strategy';
 
 @Global()
 @Module({
@@ -29,7 +30,7 @@ import { PassportModule } from '@nestjs/passport';
      PassportModule
   ],
   controllers: [UsersController],
-  providers:   [UserService, AuthService,GoogleAuthStrategy],
+  providers:   [UserService, AuthService,GoogleAuthStrategy, MicrosoftAuthStrategy],
   exports:     [UserService]
 })
 export class UsersModule implements NestModule{
@@ -41,7 +42,9 @@ export class UsersModule implements NestModule{
         {path: 'users/singup', method: RequestMethod.ALL},
         {path: 'users/verify-email/:token', method: RequestMethod.ALL},
         {path: 'users/google-login', method: RequestMethod.ALL},
-        {path: 'users/google-auth-callback', method: RequestMethod.ALL}
+        {path: 'users/google-auth-callback', method: RequestMethod.ALL},
+        {path: 'users/microsoft-login', method: RequestMethod.ALL},
+        {path: 'users/microsoft-auth-callback', method: RequestMethod.ALL}
        )
        .forRoutes(UsersController)
   }

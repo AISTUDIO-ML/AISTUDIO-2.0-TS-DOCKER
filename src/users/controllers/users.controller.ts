@@ -42,4 +42,19 @@ export class UsersController {
     async googleAuthCallback(@Request() req){
         return req.user
     }
+
+
+    @Get('microsoft-login')
+    @UseGuards(AuthGuard('microsoft-auth'))
+    async microsoftLogin(){
+          
+       
+    }
+
+    @Get('microsoft-auth-callback')
+    @UseGuards(AuthGuard('microsoft-auth'))
+    async microsoftLoginCallback(@Request() req){
+          
+       return req.user
+    }
 }
