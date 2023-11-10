@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Invitation } from 'src/invitations/entities/invitation.entity';
 import { Team } from 'src/teams/entities/team.entity';
+import { Token } from 'src/users/entities/token.entity';
 import { User } from 'src/users/entities/user.entity';
 
 @Module({
@@ -16,7 +17,7 @@ import { User } from 'src/users/entities/user.entity';
                     username: configService.getOrThrow('database.user'),
                     password: configService.getOrThrow('database.pass'),
                     database: configService.getOrThrow('database.name'),
-                    entities:[User,Invitation,Team]
+                    entities:[User,Invitation,Team, Token]
                 }
             },
             inject:[ConfigService]

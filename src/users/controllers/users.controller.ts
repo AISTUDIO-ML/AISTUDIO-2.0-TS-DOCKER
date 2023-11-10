@@ -5,6 +5,8 @@ import { UserLoginDTO } from '../dto/user-login.dto';
 import { Auth } from 'src/decorators/auth.decorator';
 import { User } from '../entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { ForgetPasswordDTO } from '../dto/forget-password.dto';
+import { ResetPasswordDTO } from '../dto/reset-password.dto';
 
 @Controller('users')
 export class UsersController {
@@ -82,5 +84,38 @@ export class UsersController {
            status:  'fail',
            message: 'User logged in successfully'
       })    
+    }
+
+    @Post('forget-password')
+    async forgetPassword(
+      @Body() forgetPasswordDto: ForgetPasswordDTO,
+      @Request()  req,
+      @Response() res
+    ){
+
+       await this.authService.handleForgetPassword(forgetPasswordDto.email);
+       return res.status(200).json({
+          status:   'success',
+          message:  'Reset password email sent successfully'
+       })
+    }
+
+    @Post('reset-password/:token')
+    async resetPassword(
+         @Param('token') token: string,
+         @Body() resetPasswordDto: ResetPasswordDTO,
+         @Request()  req,
+         @Response() res
+    ){
+
+       await this.authService.handleResetPassword(
+          token,
+          resetPasswordDto.password,
+          resetPasswordDto.confirmPassword
+       );
+       return res.status(200).json({
+          status: 'success',
+          message: 'Password reset done successfully'
+       })
     }
 }

@@ -11,11 +11,12 @@ import { GoogleAuthStrategy } from './strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { MicrosoftAuthStrategy } from './strategies/microsoft.strategy';
 import { GithubAuthStrategy } from './strategies/github.strategy';
+import { Token } from './entities/token.entity';
 
 @Global()
 @Module({
   imports:     [
-     TypeOrmModule.forFeature([User]),
+     TypeOrmModule.forFeature([User,Token]),
      JwtModule.registerAsync({
        useFactory: (configService: ConfigService) =>{
           return {
@@ -47,7 +48,9 @@ export class UsersModule implements NestModule{
         {path: 'users/microsoft-login', method: RequestMethod.ALL},
         {path: 'users/microsoft-auth-callback', method: RequestMethod.ALL},
         {path: 'users/github-login', method: RequestMethod.ALL},
-        {path: 'users/github-auth-callback', method: RequestMethod.ALL}
+        {path: 'users/github-auth-callback', method: RequestMethod.ALL},
+        {path: 'users/forget-password', method: RequestMethod.ALL},
+        {path: 'users/reset-password/:token', method: RequestMethod.ALL}
        )
        .forRoutes(UsersController)
   }

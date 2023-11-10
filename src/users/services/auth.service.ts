@@ -8,6 +8,9 @@ import { JwtService } from "@nestjs/jwt";
 import { UserUpdateDTO } from "../dto/user-update.dto";
 import { User } from "../entities/user.entity";
 import { promises } from "dns";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Token } from "../entities/token.entity";
+import { Repository } from "typeorm";
 
 
 
@@ -18,7 +21,8 @@ export class AuthService {
         private userService   : UserService,
         private mailerService : MailerService,
         private configService : ConfigService,
-        private jwtService    : JwtService
+        private jwtService    : JwtService,
+        @InjectRepository(Token) private tokenRepository: Repository<Token>
 
     ){}
 
@@ -122,4 +126,67 @@ export class AuthService {
       return this.jwtService.sign( payload );
     }
 
+    
+    randStr(length): string {
+      let result = '';
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      const charactersLength = characters.length;
+      let counter = 0;
+      while (counter < length) {
+        result  += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+      }
+      return result;
+   }
+
+   async handleForgetPassword(email: string): Promise<void> {
+
+      const user = await this.userService.findByUsername( email );
+      if(!user){
+          throw new BadRequestException('This email not exists');
+      }
+      
+      await this.tokenRepository.delete({ email: email});
+
+      let uniqueToken: string;
+      while( true){
+          uniqueToken = this.randStr(50);
+          const dup   = await this.tokenRepository.findOne({ where: { token: uniqueToken }});
+          if(!dup){
+            break;
+          }
+      }
+      const newToken = new Token;
+      newToken.token = uniqueToken;
+      newToken.email = email;
+      await this.tokenRepository.save(newToken)
+      this.mailerService.sendMail({
+          sender:    this.configService.getOrThrow('mail.from'),
+          to:        newToken.email,
+          template:  'forget-password',
+          subject:   'Reset Password',
+          context:{
+             link: `${this.configService.getOrThrow('app.frontend_host')}/reset-password/${newToken.token}`
+          }
+      })
+   }
+
+   async handleResetPassword(
+      verifyToken: string,
+      password: string,
+      confirmPassword: string
+   ){
+        if(password !== confirmPassword){
+           throw new BadRequestException('Password and confirm password are not equal');
+        }
+
+        const token = await this.tokenRepository.findOne({ where: { token: verifyToken}})
+
+        if(!token){
+           throw new BadRequestException('Invalid token')
+        }
+
+        await this.userService.updatePasswordByEmail(token.email, password);
+        this.tokenRepository.remove( token );
+   }
 }

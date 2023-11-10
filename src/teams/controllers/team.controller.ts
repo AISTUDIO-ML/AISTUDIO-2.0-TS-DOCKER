@@ -10,7 +10,7 @@ export class TeamController{
     constructor(private teamService: TeamService){}
 
     @Get()
-    async etTeams(@Auth() auth: User){
+    async getTeams(@Auth() auth: User){
         return await this.teamService.getTeams(auth);
     }
 

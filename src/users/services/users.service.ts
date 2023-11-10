@@ -115,6 +115,14 @@ export class UserService{
         return user;
     }
 
+    async updatePasswordByEmail(email: string, password: string): Promise<void>{
+
+        const user = await this.usersRepository.findOne({ where:{ username: email }});
+        if(user){
+             user.password = password;
+             this.usersRepository.save( user );
+        }
+    }
     // async checkEmailIsTaken( email: string, exceptPlatform: string ): Promise<User>{
     //     const user = await this.usersRepository.findOne({ where: {
     //         username: email,
