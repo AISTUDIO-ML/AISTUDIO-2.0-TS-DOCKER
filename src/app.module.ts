@@ -14,12 +14,14 @@ import { JWT_CONFIG } from 'config/jwt.config';
 import { InvitationsModule } from './invitations/invitations.module';
 import { TeamsModule } from './teams/teams.module';
 import { MICROSOFT_CONFIG } from 'config/microsoft.config';
+import { GOOGLE_CONFIG } from 'config/google.config';
+import { GITHUB_CONFIG } from 'config/github.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath:[`config/env/${process.env.NODE_ENV}.env`],
-      load:[APP_CONFIG, DATABASE_CONFIG,MAIL_CONFIG, JWT_CONFIG, MICROSOFT_CONFIG],
+      load:[APP_CONFIG, DATABASE_CONFIG,MAIL_CONFIG, JWT_CONFIG, MICROSOFT_CONFIG, GOOGLE_CONFIG, GITHUB_CONFIG],
       isGlobal: true
     }),
     DatabaseModule,

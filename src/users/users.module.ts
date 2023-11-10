@@ -10,6 +10,7 @@ import { AuthMiddleware } from 'src/middlewares/auth.middleware';
 import { GoogleAuthStrategy } from './strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { MicrosoftAuthStrategy } from './strategies/microsoft.strategy';
+import { GithubAuthStrategy } from './strategies/github.strategy';
 
 @Global()
 @Module({
@@ -30,7 +31,7 @@ import { MicrosoftAuthStrategy } from './strategies/microsoft.strategy';
      PassportModule
   ],
   controllers: [UsersController],
-  providers:   [UserService, AuthService,GoogleAuthStrategy, MicrosoftAuthStrategy],
+  providers:   [UserService, AuthService,GoogleAuthStrategy, MicrosoftAuthStrategy, GithubAuthStrategy],
   exports:     [UserService]
 })
 export class UsersModule implements NestModule{
@@ -44,7 +45,9 @@ export class UsersModule implements NestModule{
         {path: 'users/google-login', method: RequestMethod.ALL},
         {path: 'users/google-auth-callback', method: RequestMethod.ALL},
         {path: 'users/microsoft-login', method: RequestMethod.ALL},
-        {path: 'users/microsoft-auth-callback', method: RequestMethod.ALL}
+        {path: 'users/microsoft-auth-callback', method: RequestMethod.ALL},
+        {path: 'users/github-login', method: RequestMethod.ALL},
+        {path: 'users/github-auth-callback', method: RequestMethod.ALL}
        )
        .forRoutes(UsersController)
   }

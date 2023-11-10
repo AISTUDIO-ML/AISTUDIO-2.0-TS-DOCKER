@@ -19,6 +19,12 @@ export class User{
     @Column({select: false})
     verifyToken: string
 
+    @Column()
+    profileId: string;
+
+    @Column()
+    provider: string
+
     @CreateDateColumn()
     createdAt: Date
 

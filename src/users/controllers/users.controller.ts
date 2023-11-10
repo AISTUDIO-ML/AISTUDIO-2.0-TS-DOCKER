@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, Response, UseGuards } from '@nestjs/common';
 import { UserSignUpDTO } from '../dto/user-signup.dto';
 import { AuthService } from '../services/auth.service';
 import { UserLoginDTO } from '../dto/user-login.dto';
@@ -39,8 +39,12 @@ export class UsersController {
 
     @Get('google-auth-callback')
     @UseGuards(AuthGuard('google-auth'))
-    async googleAuthCallback(@Request() req){
-        return req.user
+    async googleAuthCallback(@Request() req, @Response() res){
+        res.header('Authorization', `Bearer ${req.user.token}`)
+        return res.status(200).json({
+          status:  'success',
+          message: 'User logged in successfully'
+         })
     }
 
 
@@ -53,8 +57,30 @@ export class UsersController {
 
     @Get('microsoft-auth-callback')
     @UseGuards(AuthGuard('microsoft-auth'))
-    async microsoftLoginCallback(@Request() req){
+    async microsoftLoginCallback(@Request() req, @Response() res){
+       
+      res.header('Authorization', `Bearer ${req.user.token}`)
+      return res.status(200).json({
+         status:  'success',
+         message: 'User logged in successfully'
+      })
+    }
+
+    @Get('github-login')
+    @UseGuards(AuthGuard('github-auth'))
+    async githubLogin(){
           
-       return req.user
+       
+    }
+
+    @Get('github-auth-callback')
+    @UseGuards(AuthGuard('github-auth'))
+    async githubLoginCallback(@Request() req, @Response() res){
+ 
+      res.header('Authorization', `Bearer ${req.user.token}`)
+      return res.status(200).json({
+           status:  'fail',
+           message: 'User logged in successfully'
+      })    
     }
 }

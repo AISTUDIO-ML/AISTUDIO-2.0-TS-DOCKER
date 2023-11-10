@@ -2,11 +2,11 @@
 
 export class UserUpdateDTO {
 
-    username:   string
+    username:    string
 
-    password:   string
+    password:    string
 
     verifyToken: string
 
-    verified: boolean
+    verified:   boolean
 }

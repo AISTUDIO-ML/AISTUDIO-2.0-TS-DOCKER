@@ -2,16 +2,21 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-microsoft";
+import { AuthService } from "../services/auth.service";
 
 
 @Injectable()
 export class MicrosoftAuthStrategy extends PassportStrategy(Strategy,'microsoft-auth'){
 
-   constructor(private configService: ConfigService){
+   constructor(
+      private configService: ConfigService,
+      private authService: AuthService
+      
+   ){
         super({
                 clientID:     configService.getOrThrow('microsoft.client_id'),
                 clientSecret: configService.getOrThrow('microsoft.client_secret'),
-                callbackURL:  'http://localhost:5000/users/microsoft-auth-callback',
+                callbackURL:  configService.getOrThrow('microsoft.callback_url'),
                 scope: ['user.read'],
                 tenant: 'common'
         })
@@ -23,10 +28,11 @@ export class MicrosoftAuthStrategy extends PassportStrategy(Strategy,'microsoft-
         profile: any,
         done: any
    ){
-      const user = {
-            profile
-      };
-      done(null, user);
+      const authData: any = {
+          profileId: profile.id
+      }
+      const token = await this.authService.loginWithMicrosoft( authData)
+      done(null, { token });
    }
    
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "../entities/user.entity";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { UserSignUpDTO } from "../dto/user-signup.dto";
 import { UserUpdateDTO } from "../dto/user-update.dto";
 
@@ -94,4 +94,32 @@ export class UserService{
         const  user = await this.usersRepository.findOne({ where:{ username }})
         return user;
     }
+
+    async createUser(userData: User): Promise<User>{
+       const  user = await this.usersRepository.save( userData );
+       return user;
+    }
+
+    async getUserByGoogleProfileId( profileId: string): Promise<User>{
+        const  user = await this.usersRepository.findOne({ where:{ profileId: profileId, provider: 'google' }})
+        return user;
+    }
+
+    async getUserByMicrosoftProfileId( profileId: string): Promise<User>{
+        const  user = await this.usersRepository.findOne({ where:{ profileId: profileId, provider: 'microsoft' }})
+        return user;
+    }
+
+    async getUserByGithubProfileId( profileId: string): Promise<User>{
+        const  user = await this.usersRepository.findOne({ where:{ profileId: profileId, provider: 'github' }})
+        return user;
+    }
+
+    // async checkEmailIsTaken( email: string, exceptPlatform: string ): Promise<User>{
+    //     const user = await this.usersRepository.findOne({ where: {
+    //         username: email,
+    //         provider: Not( exceptPlatform )
+    //     }})
+    //     return user;
+    // }
 }

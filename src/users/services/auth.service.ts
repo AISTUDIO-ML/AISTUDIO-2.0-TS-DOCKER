@@ -7,6 +7,7 @@ import { UserLoginDTO } from "../dto/user-login.dto";
 import { JwtService } from "@nestjs/jwt";
 import { UserUpdateDTO } from "../dto/user-update.dto";
 import { User } from "../entities/user.entity";
+import { promises } from "dns";
 
 
 
@@ -72,6 +73,53 @@ export class AuthService {
          userUpdateDto.verified = true;
          const  updatedUser = await this.userService.updateById(existedUser.id, userUpdateDto)
          return updatedUser;
+    }
+
+
+    async loginWithGoogle( authData: any ): Promise<string>{
+
+      let loggedUser: User;
+      loggedUser = await this.userService.getUserByGoogleProfileId( authData.profileId );
+      if( !loggedUser ){
+         let newUserData: User = new User();
+         newUserData.profileId = authData.profileId;
+         newUserData.provider  = 'google'
+         newUserData.verified  = true
+         loggedUser = await this.userService.create(newUserData)
+      }
+      const  payload = { sub: loggedUser.id }
+      return this.jwtService.sign( payload );
+    }
+
+    async loginWithMicrosoft( authData: any ): Promise<string>{
+
+      let loggedUser: User;
+      loggedUser = await this.userService.getUserByMicrosoftProfileId( authData.profileId );
+      if( !loggedUser ){
+         let newUserData: User = new User();
+         newUserData.profileId = authData.profileId;
+         newUserData.provider  = 'microsoft'
+         newUserData.verified  = true
+         loggedUser = await this.userService.create(newUserData)
+      }
+      const  payload = { sub: loggedUser.id }
+      return this.jwtService.sign( payload );
+    }
+
+    async loginWithGithub( authData: any ): Promise<string>{
+
+      let loggedUser: User;
+      loggedUser = await this.userService.getUserByGithubProfileId( authData.profileId );
+      if( !loggedUser ){
+         let newUserData: User = new User();
+         newUserData.profileId = authData.profileId;
+         newUserData.provider  = 'github'
+         newUserData.verified  = true,
+         newUserData.username  = authData.username
+         loggedUser = await this.userService.create(newUserData)
+      }
+      const  payload = { sub: loggedUser.id }
+      return this.jwtService.sign( payload );
     }
 
 }
