@@ -11,11 +11,6 @@ services:
             - mydb
         environment: 
             NODE_ENV: development
-            DATABASE_HOST: mydb
-            DATABASE_PORT: 3306
-            DATABASE_USER: root
-            DATABASE_PASS: password
-            DATABASE_NAME: nestapp
         ports:
             - "5000:5000"
         networks:
@@ -30,5 +25,7 @@ services:
           MYSQL_DATABASE: nestapp
         networks:
           - my-network
+        volumes:
+          ./data:/var/lib/mysql
 networks:
   my-network:
