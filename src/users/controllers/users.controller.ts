@@ -42,11 +42,14 @@ export class UsersController {
     @Get('google-auth-callback')
     @UseGuards(AuthGuard('google-auth'))
     async googleAuthCallback(@Request() req, @Response() res){
-        res.header('Authorization', `Bearer ${req.user.token}`)
+
         return res.status(200).json({
           status:  'success',
-          message: 'User logged in successfully'
-         })
+          message: 'User logged in successfully',
+          data: {
+            token: req.user.token
+          }
+        })
     }
 
 
@@ -61,10 +64,12 @@ export class UsersController {
     @UseGuards(AuthGuard('microsoft-auth'))
     async microsoftLoginCallback(@Request() req, @Response() res){
        
-      res.header('Authorization', `Bearer ${req.user.token}`)
       return res.status(200).json({
          status:  'success',
-         message: 'User logged in successfully'
+         message: 'User logged in successfully',
+         data: {
+            token: req.user.token
+         }
       })
     }
 
@@ -78,11 +83,13 @@ export class UsersController {
     @Get('github-auth-callback')
     @UseGuards(AuthGuard('github-auth'))
     async githubLoginCallback(@Request() req, @Response() res){
- 
-      res.header('Authorization', `Bearer ${req.user.token}`)
+
       return res.status(200).json({
-           status:  'fail',
-           message: 'User logged in successfully'
+           status:  'success',
+           message: 'User logged in successfully',
+           data: {
+             token: req.user.token
+           }
       })    
     }
 
